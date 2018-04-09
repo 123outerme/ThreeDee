@@ -2,15 +2,15 @@
 
 int main(int argc, char* argv[])
 {
-    initSDL("Hi", 20 * 32, 15 * 32, 32, "./cb.bmp", "./Px437_ITT_BIOS_X.ttf", 20);
+    initSDL("ThreeDee Engine", 20 * 32, 15 * 32, 32, "./cb.bmp", "./Px437_ITT_BIOS_X.ttf", 20);
     {
         TDPt camPt;
-        initPt(&camPt, 0, 0, -10);
+        initPt(&camPt, 0, 0, 0);
         initCam(&mainCamera, camPt, 10, -10, 0, 1.0);
     }
     TDPt triPts[3];
-    int triX[3] = {2, 5, 0};
-    int triY[3] = {2, 5, 4};
+    int triX[3] = {0, 5, 0};
+    int triY[3] = {0, 5, 5};
     int triZ[3] = {0, 0, 0};
     for(int i = 0; i < 3; i++)
     {
@@ -36,14 +36,14 @@ int main(int argc, char* argv[])
         }
         if (key == SDLK_ESCAPE || key == -1)
             quit = true;
-            char XText[6];
-            char YText[6];
-            char ZText[6];
-            char camZText[6];
-            snprintf(XText, 5, "%f", newTri.pts[0].x);
-            snprintf(YText, 5, "%f", newTri.pts[0].y);
-            snprintf(ZText, 5, "%f", newTri.pts[0].z);
-            snprintf(camZText, 5, "%f", mainCamera.point.z);
+            char XText[8];
+            char YText[8];
+            char ZText[8];
+            char camZText[8];
+            snprintf(XText, 7, "x %f", newTri.pts[0].x);
+            snprintf(YText, 7, "y %f", newTri.pts[0].y);
+            snprintf(ZText, 7, "z %f", newTri.pts[0].z);
+            snprintf(camZText, 7, "c %f", mainCamera.point.z);
             drawText(XText, SCREEN_WIDTH - (strlen(XText) * TILE_SIZE), 0, SCREEN_WIDTH, SCREEN_HEIGHT, (SDL_Color) {0x00, 0x00, 0x00, 0xFF}, false);
             drawText(YText, SCREEN_WIDTH - (strlen(YText) * TILE_SIZE), TILE_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT, (SDL_Color) {0x00, 0x00, 0x00, 0xFF}, false);
             drawText(ZText, SCREEN_WIDTH - (strlen(ZText) * TILE_SIZE), 2 * TILE_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT, (SDL_Color) {0x00, 0x00, 0x00, 0xFF}, false);
