@@ -167,13 +167,13 @@ void rotatePoint(TDPt* ptPtr, TDPt fromPt, double theta)
 void draw3DPoint(TDPt point, TDCam cam, SDL_Color color)
 {
     SDL_SetRenderDrawColor(mainRenderer, color.r, color.g, color.b, color.a);
-    SDL_RenderDrawPoint(mainRenderer, (cam.zoom * TILE_SIZE) * point.x * ((cam.point.z - point.z) - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt), (cam.zoom * TILE_SIZE) * point.y * ((cam.point.z - point.z) - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt));
+    SDL_RenderDrawPoint(mainRenderer, (cam.zoom * TILE_SIZE) * point.x * (point.z - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt), (cam.zoom * TILE_SIZE) * point.y * ((cam.point.z - point.z) - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt));
 }
 
 void draw3DLine(TDPt pt1, TDPt pt2, TDCam cam, SDL_Color color)
 {
     SDL_SetRenderDrawColor(mainRenderer, color.r, color.g, color.b, color.a);
-    SDL_RenderDrawLine(mainRenderer, (cam.zoom * TILE_SIZE) * pt1.x * ((cam.point.z - pt1.z) - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt), (cam.zoom * TILE_SIZE) * pt1.y * ((cam.point.z - pt1.z) - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt), (cam.zoom * TILE_SIZE) * pt2.x * ((cam.point.z - pt2.z) - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt), (cam.zoom * TILE_SIZE) * pt2.y * ((cam.point.z - pt2.z) - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt));
+    SDL_RenderDrawLine(mainRenderer, (cam.zoom * TILE_SIZE) * pt1.x * (pt1.z + cam.point.z - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt), (cam.zoom * TILE_SIZE) * pt1.y * (pt1.z + cam.point.z - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt), (cam.zoom * TILE_SIZE) * pt2.x * (pt2.z + cam.point.z - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt), (cam.zoom * TILE_SIZE) * pt2.y * (pt2.z + cam.point.z - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt));
 }
 
 void drawTri(TDTri tri, TDCam cam, SDL_Color color)
