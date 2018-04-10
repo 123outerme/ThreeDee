@@ -24,14 +24,14 @@ typedef struct _TDPt {
     double x;
     double y;
     double z;
-} TDPt;
+} TDPoint;
 
 typedef struct _TDTri {
-    TDPt pts[3];
+    TDPoint pts[3];
 } TDTri;
 
 typedef struct _TDCam {
-    TDPt point;
+    TDPoint point;
     int frustrum;
     int vanishingPt;
     int angle;
@@ -42,12 +42,12 @@ int initSDL(char* windowName, int screenWidth, int screenHeight, int tileSize, c
 bool loadIMG(char* imgPath, SDL_Texture** dest);
 bool loadTTFont(char* filePath, TTF_Font** dest, int sizeInPts);
 int* loadTextTexture(char* text, SDL_Texture** dest, int maxW, SDL_Color color, bool isBlended);
-void initPt(TDPt* ptPtr, double x, double y, double z);
-void initTri(TDTri* triPtr, TDPt ptArr[]);
-void initCam(TDCam* camPtr, TDPt point, int frustrum, int vanishingPt, int angle, double zoom);
-void rotatePoint(TDPt* ptPtr, TDPt fromPt, double theta);
-void draw3DPoint(TDPt point, TDCam cam, SDL_Color color);
-void draw3DLine(TDPt pt1, TDPt pt2, TDCam cam, SDL_Color color);
+void initPt(TDPoint* ptPtr, double x, double y, double z);
+void initTri(TDTri* triPtr, TDPoint ptArr[]);
+void initCam(TDCam* camPtr, TDPoint point, int frustrum, int vanishingPt, int angle, double zoom);
+void rotatePoint(TDPoint* ptPtr, TDPoint fromPt, double theta);
+SDL_Point draw3DPoint(TDPoint point, TDCam cam, SDL_Color color);
+void draw3DLine(TDPoint pt1, TDPoint pt2, TDCam cam, SDL_Color color);
 void drawTri(TDTri tri, TDCam cam, SDL_Color color);
 void drawText(char* input, int x, int y, int maxW, int maxH, SDL_Color color, bool render);
 SDL_Keycode getKey();
