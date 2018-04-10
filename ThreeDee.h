@@ -17,6 +17,8 @@
 #define false 0
 #define printBool(bool) bool ? "true" : "false"
 
+#define PI 3.14159265359879
+
 #define clearScreen() SDL_RenderClear(mainRenderer)
 #define updateScreen() SDL_RenderPresent(mainRenderer)
 

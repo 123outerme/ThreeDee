@@ -158,10 +158,10 @@ void initCam(TDCam* camPtr, TDPoint point, int frustrum, int vanishingPt, int an
     camPtr->zoom = zoom;
 }
 
-void rotatePoint(TDPoint* ptPtr, TDPoint fromPt, double theta)
+void rotatePoint(TDPoint* ptPtr, TDPoint aroundPt, double degrees)
 {
-    ptPtr->x = fromPt.x + ((ptPtr->x - fromPt.x) * cos(theta) - (fromPt.z - ptPtr->z) * sin(theta));
-    ptPtr->z = fromPt.z + ((ptPtr->x - fromPt.x) * sin(theta) - (fromPt.z - ptPtr->z) * cos(theta));
+    ptPtr->x = aroundPt.x + ((ptPtr->x - aroundPt.x) * cos(degrees * (PI / 180.0)) - (aroundPt.z - ptPtr->z) * sin(degrees * (PI / 180.0)));
+    ptPtr->z = aroundPt.z + ((ptPtr->x - aroundPt.x) * sin(degrees * (PI / 180.0)) - (aroundPt.z - ptPtr->z) * cos(degrees * (PI / 180.0)));
 }
 
 SDL_Point draw3DPoint(TDPoint point, TDCam cam, SDL_Color color)
@@ -169,7 +169,7 @@ SDL_Point draw3DPoint(TDPoint point, TDCam cam, SDL_Color color)
     int x = (cam.zoom * TILE_SIZE) * (point.x -  cam.point.x) * (point.z - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt),
     y = (cam.zoom * TILE_SIZE) * (point.y - cam.point.y) * (point.z - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt);
     TDPoint newPt = {.x = x, .y = -1, .z = y};
-    rotatePoint(&(newPt), mainCamera.point, mainCamera.angle);
+    rotatePoint(&newPt, mainCamera.point, mainCamera.angle);
     SDL_SetRenderDrawColor(mainRenderer, color.r, color.g, color.b, color.a);
     SDL_RenderDrawPoint(mainRenderer, newPt.x, newPt.z);
     return (SDL_Point) {.x = newPt.x, .y = newPt.z};
