@@ -8,16 +8,20 @@ int main(int argc, char* argv[])
         initPt(&camPt, -15, -10, 0);
         initCam(&mainCamera, camPt, 10, -10, 0, 1.0);
     }
-    TDPoint triPts[3];
-    int triX[3] = {0, 5, 0};
-    int triY[3] = {0, 5, 5};
-    int triZ[3] = {0, 0, 0};
-    for(int i = 0; i < 3; i++)
+    TDPoint triPts[3][3];
+    int triX[3][3] = {{0, 5, 0}, {0, 5, 0}, {0, 5, 0}};
+    int triY[3][3] = {{0, 5, 5}, {0, 5, 5}, {0, 5, 5}};
+    int triZ[3][3] = {{0, 0, 0}, {5, 5, 5}, {-5, -5, -5}};
+    for(int x = 0; x < 3; x++)
     {
-        initPt(&(triPts[i]), triX[i], triY[i], triZ[i]);
+        for(int i = 0; i < 3; i++)
+        {
+            initPt(&(triPts[x][i]), triX[x][i], triY[x][i], triZ[x][i]);
+        }
     }
-    TDTri newTri;
-    initTri(&newTri, triPts);
+    TDTri newTris[3];
+    for(int i = 0; i < 3; i++)
+        initTri(&newTris[i], triPts[i]);
     bool quit = false;
     while(!quit)
     {
@@ -32,20 +36,21 @@ int main(int argc, char* argv[])
 
         if (key == SDLK_UP || key == SDLK_DOWN)
         {
-            mainCamera.point.z += ((key == SDLK_UP) - (key == SDLK_DOWN));
+            mainCamera.point.z += ((key == SDLK_DOWN) - (key == SDLK_UP));
+            //mainCamera.zoom += .1 * ((key == SDLK_UP) - (key == SDLK_DOWN));
         }
         if (key == SDLK_LEFT || key == SDLK_RIGHT)
         {
-            mainCamera.angle = (mainCamera.angle + 10 * (key == SDLK_LEFT ? -1 : 1)) % 360;
+            mainCamera.angle = (mainCamera.angle + 5 * (key == SDLK_LEFT ? -1 : 1)) % 360;
             /*for(int i = 0; i < 3; i++)
                 rotatePoint(&(newTri.pts[i]), mainCamera.point, mainCamera.angle);*/
         }
         if (key == SDLK_ESCAPE || key == -1)
             quit = true;
         char debugText[7][9];
-        snprintf(debugText[0], 7, "x %f", newTri.pts[0].x);
-        snprintf(debugText[1], 7, "y %f", newTri.pts[0].y);
-        snprintf(debugText[2], 7, "z %f", newTri.pts[0].z);
+        snprintf(debugText[0], 7, "x %f", newTris[0].pts[0].x);
+        snprintf(debugText[1], 7, "y %f", newTris[0].pts[0].y);
+        snprintf(debugText[2], 7, "z %f", newTris[0].pts[0].z);
         snprintf(debugText[3], 8, "cx %f", mainCamera.point.x);
         snprintf(debugText[4], 8, "cy %f", mainCamera.point.y);
         snprintf(debugText[5], 8, "cz %f", mainCamera.point.z);
@@ -54,7 +59,8 @@ int main(int argc, char* argv[])
         {
             drawText(debugText[i], SCREEN_WIDTH - (strlen(debugText[i]) * TILE_SIZE), i * TILE_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT, (SDL_Color) {0x00, 0x00, 0x00, 0xFF}, false);
         }
-        drawTri(newTri, mainCamera, (SDL_Color) {.r = 0x00, .g = 0x00, .b = 0xFF, .a = 0xFF});
+        for(int i = 0; i < 3; i++)
+            drawTri(newTris[i], mainCamera, (SDL_Color) {.r = 0x00, .g = 0x00, .b = 0xFF, .a = 0xFF});
         updateScreen();
     }
     closeSDL();

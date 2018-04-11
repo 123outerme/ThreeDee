@@ -160,19 +160,21 @@ void initCam(TDCam* camPtr, TDPoint point, int frustrum, int vanishingPt, int an
 
 void rotatePoint(TDPoint* ptPtr, TDPoint aroundPt, double degrees)
 {
-    ptPtr->x = aroundPt.x + ((ptPtr->x - aroundPt.x) * cos(degrees * (PI / 180.0)) - (aroundPt.z - ptPtr->z) * sin(degrees * (PI / 180.0)));
-    //ptPtr->z = aroundPt.z + ((ptPtr->x - aroundPt.x) * sin(degrees * (PI / 180.0)) - (aroundPt.z - ptPtr->z) * cos(degrees * (PI / 180.0)));
+    ptPtr->x = aroundPt.x + ((ptPtr->x - aroundPt.x) * cos(degrees * PI / 180.0) - (aroundPt.z - ptPtr->z) * sin(degrees * PI / 180.0));
+    //ptPtr->y = aroundPt.z + ((ptPtr->y - aroundPt.z) * sin(degrees * PI / 180.0) - (aroundPt.z - ptPtr->y) * cos(degrees * PI / 180.0));
 }
 
 SDL_Point draw3DPoint(TDPoint point, TDCam cam, SDL_Color color)
 {
-    TDPoint newPt = {.x = (cam.zoom * TILE_SIZE) * (point.x -  cam.point.x) * (point.z - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt),
-    .y = -1, .z = (cam.zoom * TILE_SIZE) * (point.y - cam.point.y) * (point.z - cam.vanishingPt) / (cam.frustrum - cam.vanishingPt)};
-    rotatePoint(&newPt, mainCamera.point, mainCamera.angle);
+    TDPoint newPt = {.x = (cam.zoom * TILE_SIZE) * (point.x - cam.point.x) * (point.z - cam.vanishingPt) / ((cam.point.z * TILE_SIZE) - cam.vanishingPt),
+    .y = (cam.zoom * TILE_SIZE) * (point.y - cam.point.y) * (point.z - cam.vanishingPt) / ((cam.point.z * TILE_SIZE) - cam.vanishingPt),
+    .z = -1};
+    rotatePoint(&newPt, cam.point, cam.angle);
+    newPt.x -= cam.point.x * TILE_SIZE;
+    newPt.y -= cam.point.y * TILE_SIZE;
     SDL_SetRenderDrawColor(mainRenderer, color.r, color.g, color.b, color.a);
-    if (newPt.z > cam.point.z)
-        SDL_RenderDrawPoint(mainRenderer, newPt.x, newPt.z);
-    return (SDL_Point) {.x = newPt.x, .y = newPt.z};
+    SDL_RenderDrawPoint(mainRenderer, newPt.x, newPt.y);
+    return (SDL_Point) {.x = newPt.x, .y = newPt.y};
 }
 
 void draw3DLine(TDPoint pt1, TDPoint pt2, TDCam cam, SDL_Color color)
@@ -180,8 +182,7 @@ void draw3DLine(TDPoint pt1, TDPoint pt2, TDCam cam, SDL_Color color)
     SDL_Point newPoint1 = draw3DPoint(pt1, cam, (SDL_Color) {0x00, 0x00, 0x00, 0xFF});
     SDL_Point newPoint2 = draw3DPoint(pt2, cam, (SDL_Color) {0x00, 0x00, 0x00, 0xFF});
     SDL_SetRenderDrawColor(mainRenderer, color.r, color.g, color.b, color.a);
-    if (newPoint1.y > cam.point.z && newPoint2.y > cam.point.z)
-        SDL_RenderDrawLine(mainRenderer, newPoint1.x, newPoint1.y, newPoint2.x, newPoint2.y);
+    SDL_RenderDrawLine(mainRenderer, newPoint1.x, newPoint1.y, newPoint2.x, newPoint2.y);
 }
 
 void drawTri(TDTri tri, TDCam cam, SDL_Color color)
