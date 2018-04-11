@@ -5,7 +5,7 @@ int main(int argc, char* argv[])
     initSDL("ThreeDee Engine", 20 * 32, 15 * 32, 32, "./cb.bmp", "./Px437_ITT_BIOS_X.ttf", 20);
     {
         TDPoint camPt;
-        initPt(&camPt, -15, -10, 0);
+        initPt(&camPt, 0, 0, -10);
         initCam(&mainCamera, camPt, 10, -10, 0, 1.0);
     }
     TDPoint triPts[3][3];
@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
         clearScreen();
         SDL_Keycode key = getKey();
         if (key == SDLK_a || key == SDLK_d)
-            mainCamera.point.x += ((key == SDLK_a) - (key == SDLK_d));
+            mainCamera.point.x += ((key == SDLK_d) - (key == SDLK_a));
 
         if (key == SDLK_w || key == SDLK_s)
             mainCamera.point.y += ((key == SDLK_w) - (key == SDLK_s));

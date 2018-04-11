@@ -149,6 +149,12 @@ void initTri(TDTri* triPtr, TDPoint ptArr[])
         initPt(&(triPtr->pts[i]), ptArr[i].x, ptArr[i].y, ptArr[i].z);
 }
 
+void initQuad(TDQuad* quadPtr, TDPoint ptArr[])
+{
+    for(int i = 0; i < 4; i++)
+        initPt(&(quadPtr->pts[i]), ptArr[i].x, ptArr[i].y, ptArr[i].z);
+}
+
 void initCam(TDCam* camPtr, TDPoint point, int frustrum, int vanishingPt, int angle, double zoom)
 {
     camPtr->point = point;
@@ -160,18 +166,18 @@ void initCam(TDCam* camPtr, TDPoint point, int frustrum, int vanishingPt, int an
 
 void rotatePoint(TDPoint* ptPtr, TDPoint aroundPt, double degrees)
 {
-    ptPtr->x = aroundPt.x + ((ptPtr->x - aroundPt.x) * cos(degrees * PI / 180.0) - (aroundPt.z - ptPtr->z) * sin(degrees * PI / 180.0));
+    //ptPtr->x = aroundPt.x + ((ptPtr->x - aroundPt.x) * cos(degrees * PI / 180.0) - (aroundPt.z - ptPtr->z) * sin(degrees * PI / 180.0));
     //ptPtr->y = aroundPt.z + ((ptPtr->y - aroundPt.z) * sin(degrees * PI / 180.0) - (aroundPt.z - ptPtr->y) * cos(degrees * PI / 180.0));
+    ptPtr->x = aroundPt.x + ((ptPtr->x - aroundPt.x) * cos(degrees * PI / 180));
+    ptPtr->z = aroundPt.z + ((ptPtr->z - aroundPt.z) * sin(degrees * PI / 180));
 }
 
 SDL_Point draw3DPoint(TDPoint point, TDCam cam, SDL_Color color)
 {
-    TDPoint newPt = {.x = (cam.zoom * TILE_SIZE) * (point.x - cam.point.x) * (point.z - cam.vanishingPt) / ((cam.point.z * TILE_SIZE) - cam.vanishingPt),
-    .y = (cam.zoom * TILE_SIZE) * (point.y - cam.point.y) * (point.z - cam.vanishingPt) / ((cam.point.z * TILE_SIZE) - cam.vanishingPt),
-    .z = -1};
+    TDPoint newPt = {.x = point.x - cam.point.x, .y = point.y - cam.point.y, .z = point.z - cam.point.z};
     rotatePoint(&newPt, cam.point, cam.angle);
-    newPt.x -= cam.point.x * TILE_SIZE;
-    newPt.y -= cam.point.y * TILE_SIZE;
+    newPt.x = (newPt.x * (point.z - cam.vanishingPt) / ((cam.point.z) - cam.vanishingPt)) + SCREEN_WIDTH / 2;
+    newPt.y = (newPt.y * (point.z - cam.vanishingPt) / ((cam.point.z) - cam.vanishingPt))  + SCREEN_HEIGHT / 3;
     SDL_SetRenderDrawColor(mainRenderer, color.r, color.g, color.b, color.a);
     SDL_RenderDrawPoint(mainRenderer, newPt.x, newPt.y);
     return (SDL_Point) {.x = newPt.x, .y = newPt.y};
@@ -189,6 +195,12 @@ void drawTri(TDTri tri, TDCam cam, SDL_Color color)
 {
     for(int i = 0; i < 3; i++)
         draw3DLine(tri.pts[i], tri.pts[(i + 1) % 3], cam, color);
+}
+
+void drawQuad(TDQuad quad, TDCam cam, SDL_Color color)
+{
+    for(int i = 0; i < 4; i++)
+        draw3DLine(quad.pts[i], quad.pts[(i + 1) % 4], cam, color);
 }
 
 void drawText(char* input, int x, int y, int maxW, int maxH, SDL_Color color, bool render)

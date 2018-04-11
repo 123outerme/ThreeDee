@@ -32,6 +32,10 @@ typedef struct _TDTri {
     TDPoint pts[3];
 } TDTri;
 
+typedef struct _TDQuad {
+    TDPoint pts[4];
+} TDQuad;
+
 typedef struct _TDCam {
     TDPoint point;
     int frustrum;
@@ -46,6 +50,7 @@ bool loadTTFont(char* filePath, TTF_Font** dest, int sizeInPts);
 int* loadTextTexture(char* text, SDL_Texture** dest, int maxW, SDL_Color color, bool isBlended);
 void initPt(TDPoint* ptPtr, double x, double y, double z);
 void initTri(TDTri* triPtr, TDPoint ptArr[]);
+void initQuad(TDQuad* quadPtr, TDPoint ptArr[]);
 void initCam(TDCam* camPtr, TDPoint point, int frustrum, int vanishingPt, int angle, double zoom);
 void rotatePoint(TDPoint* ptPtr, TDPoint fromPt, double theta);
 SDL_Point draw3DPoint(TDPoint point, TDCam cam, SDL_Color color);
