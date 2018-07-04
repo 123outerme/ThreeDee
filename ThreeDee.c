@@ -155,10 +155,11 @@ void initQuad(TDQuad* quadPtr, TDPoint ptArr[])
         initPt(&(quadPtr->pts[i]), ptArr[i].x, ptArr[i].y, ptArr[i].z);
 }
 
-void initCam(TDCam* camPtr, TDPoint point, int frustrum, int vanishingPt, int angle, double zoom)
+void initCam(TDCam* camPtr, TDPoint point, int frustrum, int vanishingPt, int angle, int skew, double zoom)
 {
     camPtr->point = point;
     camPtr->angle = angle;
+    camPtr->skew = skew;
     camPtr->frustrum = frustrum;
     camPtr->vanishingPt = vanishingPt;
     camPtr->zoom = zoom;
@@ -168,8 +169,30 @@ void rotatePoint(TDPoint* ptPtr, TDPoint aroundPt, double degrees)
 {
     //ptPtr->x = aroundPt.x + ((ptPtr->x - aroundPt.x) * cos(degrees * PI / 180.0) - (aroundPt.z - ptPtr->z) * sin(degrees * PI / 180.0));
     //ptPtr->y = aroundPt.z + ((ptPtr->y - aroundPt.z) * sin(degrees * PI / 180.0) - (aroundPt.z - ptPtr->y) * cos(degrees * PI / 180.0));
-    ptPtr->x = aroundPt.x + ((ptPtr->x - aroundPt.x) * cos(degrees * PI / 180));
-    ptPtr->z = aroundPt.z + ((ptPtr->z - aroundPt.z) * sin(degrees * PI / 180));
+    //ptPtr->x = aroundPt.x + ((ptPtr->x - aroundPt.x) * cos(degrees * PI / 180));
+    //ptPtr->z = aroundPt.z + ((ptPtr->z - aroundPt.z) * sin(degrees * PI / 180));
+    {
+        double x = ptPtr->x;
+        double y = ptPtr->z;
+
+        float s = sin(degToRad(degrees));
+        float c = cos(degToRad(degrees));
+
+        x -= aroundPt.x;
+        y -= aroundPt.z;
+
+        int xnew = x * c - y * s;
+        int ynew = x * s + y * c;
+
+        x = xnew + aroundPt.x;
+        y = ynew + aroundPt.z;
+
+        x = x - aroundPt.x;
+        y = y - aroundPt.y;
+
+        ptPtr->x = x * (ptPtr->z - aroundPt.z);
+        ptPtr->z = y * (ptPtr->z - aroundPt.z);
+    }
 }
 
 SDL_Point draw3DPoint(TDPoint point, TDCam cam, SDL_Color color)

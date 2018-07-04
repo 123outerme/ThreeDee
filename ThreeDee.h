@@ -17,7 +17,11 @@
 #define false 0
 #define printBool(bool) bool ? "true" : "false"
 
-#define PI 3.14159265359879
+#ifndef PI
+    #define PI (3.14159265359879)
+#endif // PI
+#define radToDeg(x) (180.0 * x / PI)
+#define degToRad(x) (x * PI / 180.0)
 
 #define clearScreen() SDL_RenderClear(mainRenderer)
 #define updateScreen() SDL_RenderPresent(mainRenderer)
@@ -41,6 +45,7 @@ typedef struct _TDCam {
     int frustrum;
     int vanishingPt;
     int angle;
+    int skew;
     double zoom;
 } TDCam;
 
@@ -51,7 +56,7 @@ int* loadTextTexture(char* text, SDL_Texture** dest, int maxW, SDL_Color color, 
 void initPt(TDPoint* ptPtr, double x, double y, double z);
 void initTri(TDTri* triPtr, TDPoint ptArr[]);
 void initQuad(TDQuad* quadPtr, TDPoint ptArr[]);
-void initCam(TDCam* camPtr, TDPoint point, int frustrum, int vanishingPt, int angle, double zoom);
+void initCam(TDCam* camPtr, TDPoint point, int frustrum, int vanishingPt, int angle, int skew, double zoom);
 void rotatePoint(TDPoint* ptPtr, TDPoint fromPt, double theta);
 SDL_Point draw3DPoint(TDPoint point, TDCam cam, SDL_Color color);
 void draw3DLine(TDPoint pt1, TDPoint pt2, TDCam cam, SDL_Color color);
